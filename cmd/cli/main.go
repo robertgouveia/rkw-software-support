@@ -3,16 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/blang/semver/v4"
+	"github.com/blang/semver"
 	"github.com/rhysd/go-github-selfupdate/selfupdate"
 	"github.com/robertgouveia/do-my-job/menu"
 	"github.com/robertgouveia/do-my-job/tea"
 )
 
 const (
-	currentVersion = "0.2.4"                              // The current version hardcoded in your app
+	currentVersion = "0.3.2"                              // The current version hardcoded in your app
 	repoSlug       = "robertgouveia/rkw-software-support" // GitHub repository slug
 )
 
@@ -83,7 +82,7 @@ func updateSoftware() {
 
 	// Display the new version found and start updating
 	fmt.Printf("New version found: %s\nUpdating...\n", latestVersion)
-	if err := updater.UpdateTo(latest, os.Args[0]); err != nil {
+	if _, err := updater.UpdateSelf(v, repoSlug); err != nil {
 		fmt.Printf("Update failed: %s\n", err.Error())
 		return
 	}
