@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	currentVersion = "0.1.0"                              // The current version hardcoded in your app
+	currentVersion = "0.2.4"                              // The current version hardcoded in your app
 	repoSlug       = "robertgouveia/rkw-software-support" // GitHub repository slug
 )
 
