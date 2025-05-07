@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/blang/semver"
 	"github.com/rhysd/go-github-selfupdate/selfupdate"
@@ -16,77 +17,58 @@ const (
 )
 
 func main() {
-	// Start the self-update process
-	updateSoftware()
-
-	latest, found, err := selfupdate.DetectLatest(repoSlug)
-	if err != nil {
-		log.Fatalf("Error detecting latest: %v\n", err)
-	}
-	if !found || latest == nil {
-		fmt.Println("No new version found.")
-		return
-	}
-	fmt.Printf("Found version: %s\n", latest.Version)
-
 	mainMenu := tea.Create("Server Configuration Tool")
 	menu.ScriptMenu(mainMenu)
-	menu.ServerMenu(mainMenu)
+	menu.ServerMenu(mainMenu, updateSoftware)
 
-	_, err = mainMenu.Run()
+	_, err := mainMenu.Run()
 	if err != nil {
 		log.Fatalf("Error running menu: %v", err)
 	}
 }
 
-func updateSoftware() {
+func updateSoftware() string {
 	// Parse the current version using github.com/blang/semver
 	v, err := semver.Parse(currentVersion)
 	if err != nil {
-		fmt.Printf("Error parsing current version: %s\n", err.Error())
-		return
+		return fmt.Sprintf("Error parsing current version: %s\n", err.Error())
 	}
 
 	// Create the updater
 	updater, err := selfupdate.NewUpdater(selfupdate.Config{})
 	if err != nil {
-		fmt.Printf("Error creating updater: %s\n", err.Error())
-		return
+		return fmt.Sprintf("Error creating updater: %s\n", err.Error())
 	}
 
 	// Detect the latest release on GitHub
 	latest, found, err := updater.DetectLatest(repoSlug)
 	if err != nil {
-		fmt.Printf("Error checking for updates: %s\n", err.Error())
-		return
+		return fmt.Sprintf("Error checking for updates: %s\n", err.Error())
 	}
 
 	// Check if we found the latest version or it returned a nil
 	if !found || latest == nil {
-		fmt.Println("No latest version found or failed to fetch the version.")
-		return
+		return fmt.Sprintf("No latest version found or failed to fetch the version.")
 	}
 
 	// Ensure that latest.Version is comparable to v (both should be *semver.Version)
 	latestVersion, err := semver.Parse(latest.Version.String())
 	if err != nil {
-		fmt.Printf("Error parsing latest version: %s\n", err.Error())
-		return
+		return fmt.Sprintf("Error parsing latest version: %s\n", err.Error())
 	}
 
 	// If the latest version is not found or is not newer, exit
 	if latestVersion.LTE(v) {
-		fmt.Println("You're up-to-date!")
-		return
+		return fmt.Sprint("You're up-to-date!")
 	}
 
 	// Display the new version found and start updating
 	fmt.Printf("New version found: %s\nUpdating...\n", latestVersion)
 	if _, err := updater.UpdateSelf(v, repoSlug); err != nil {
 		fmt.Printf("Update failed: %s\n", err.Error())
-		return
+		os.Exit(0)
 	}
 
 	// Success message
-	fmt.Printf("Successfully updated to version: %s\n", latestVersion)
+	return fmt.Sprintf("Successfully updated to version: %s\n", latestVersion)
 }

@@ -7,8 +7,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/blang/semver"
-	"github.com/rhysd/go-github-selfupdate/selfupdate"
 	"github.com/robertgouveia/do-my-job/database"
 	"github.com/robertgouveia/do-my-job/lib"
 	"github.com/robertgouveia/do-my-job/storage"
@@ -20,7 +18,7 @@ const (
 	repoSlug       = "robertgouveia/rkw-software-support"
 )
 
-func ServerMenu(mainMenu *tea.TeaModel) *tea.TeaModel {
+func ServerMenu(mainMenu *tea.TeaModel, update func() string) *tea.TeaModel {
 	configureServerMenu := tea.Create("Configure Servers")
 	mainMenu.AddSubmenu("Configure Servers", configureServerMenu)
 
@@ -31,27 +29,7 @@ func ServerMenu(mainMenu *tea.TeaModel) *tea.TeaModel {
 	configureServerMenu.AddSubmenu("RKW Level 3 STONE", serverTemplate("RKW Level 3 STONE", "RKW Level 3 STONE"))
 
 	mainMenu.AddMenuItem("Update", func() string {
-		v := semver.MustParse(currentVersion)
-		updater, err := selfupdate.NewUpdater(selfupdate.Config{})
-		if err != nil {
-			return fmt.Sprintf("Error creating updater: %s", err.Error())
-		}
-
-		latest, found, err := updater.DetectLatest(repoSlug)
-		if err != nil {
-			return fmt.Sprintf("Error checking for updates: %s", err.Error())
-		}
-
-		if !found || latest.Version.LTE(v) {
-			return "You're up-to-date: " + currentVersion
-		}
-
-		fmt.Printf("New version found: %s\nUpdating...\n", latest.Version)
-		if err := updater.UpdateTo(latest, os.Args[0]); err != nil {
-			return fmt.Sprintf("Update failed: %s", err.Error())
-		}
-
-		return fmt.Sprintf("Successfully updated to version: %s", latest.Version)
+		return update()
 	})
 
 	mainMenu.AddMenuItem("About", func() string {
