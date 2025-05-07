@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/blang/semver/v4"
 	"github.com/rhysd/go-github-selfupdate/selfupdate"
+	"github.com/robertgouveia/do-my-job/menu"
+	"github.com/robertgouveia/do-my-job/tea"
 )
 
 const (
@@ -16,6 +19,15 @@ const (
 func main() {
 	// Start the self-update process
 	updateSoftware()
+
+	mainMenu := tea.Create("Server Configuration Tool")
+	menu.ScriptMenu(mainMenu)
+	menu.ServerMenu(mainMenu)
+
+	_, err := mainMenu.Run()
+	if err != nil {
+		log.Fatalf("Error running menu: %v", err)
+	}
 }
 
 func updateSoftware() {
