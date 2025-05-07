@@ -81,6 +81,11 @@ func ScriptMenu(mainMenu *tea.TeaModel) *tea.TeaModel {
 			ServerName: "RKW Level 1",
 			Statement:  database.ShippingChange,
 		},
+		{
+			Title:      "Test",
+			ServerName: "",
+			Statement:  "",
+		},
 	}
 
 	for _, script := range scripts {
