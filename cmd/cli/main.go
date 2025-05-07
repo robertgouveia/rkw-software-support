@@ -40,6 +40,12 @@ func updateSoftware() {
 		return
 	}
 
+	// Check if we found the latest version or it returned a nil
+	if !found || latest == nil {
+		fmt.Println("No latest version found or failed to fetch the version.")
+		return
+	}
+
 	// Ensure that latest.Version is comparable to v (both should be *semver.Version)
 	latestVersion, err := semver.Parse(latest.Version.String())
 	if err != nil {
@@ -48,7 +54,7 @@ func updateSoftware() {
 	}
 
 	// If the latest version is not found or is not newer, exit
-	if !found || latestVersion.LTE(v) {
+	if latestVersion.LTE(v) {
 		fmt.Println("You're up-to-date!")
 		return
 	}
