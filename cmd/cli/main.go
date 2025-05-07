@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	currentVersion = "0.9.9"                              // The current version hardcoded in your app
+	currentVersion = "1.0.0"                              // The current version hardcoded in your app
 	repoSlug       = "robertgouveia/rkw-software-support" // GitHub repository slug
 )
 
@@ -48,7 +48,7 @@ func updateSoftware() string {
 
 	// Check if we found the latest version or it returned a nil
 	if !found || latest == nil {
-		return fmt.Sprintf("No latest version found or failed to fetch the version.")
+		return "No latest version found or failed to fetch the version."
 	}
 
 	// Ensure that latest.Version is comparable to v (both should be *semver.Version)
@@ -59,7 +59,7 @@ func updateSoftware() string {
 
 	// If the latest version is not found or is not newer, exit
 	if latestVersion.LTE(v) {
-		return fmt.Sprint("You're up-to-date!")
+		return "You're up-to-date!"
 	}
 
 	// Display the new version found and start updating

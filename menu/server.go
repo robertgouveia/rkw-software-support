@@ -13,11 +13,6 @@ import (
 	"github.com/robertgouveia/do-my-job/tea"
 )
 
-const (
-	currentVersion = "0.2.1"
-	repoSlug       = "robertgouveia/rkw-software-support"
-)
-
 func ServerMenu(mainMenu *tea.TeaModel, update func() string) *tea.TeaModel {
 	configureServerMenu := tea.Create("Configure Servers")
 	mainMenu.AddSubmenu("Configure Servers", configureServerMenu)
