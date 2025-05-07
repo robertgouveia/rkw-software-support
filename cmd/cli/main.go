@@ -20,11 +20,21 @@ func main() {
 	// Start the self-update process
 	updateSoftware()
 
+	latest, found, err := selfupdate.DetectLatest(repoSlug)
+	if err != nil {
+		log.Fatalf("Error detecting latest: %v\n", err)
+	}
+	if !found || latest == nil {
+		fmt.Println("No new version found.")
+		return
+	}
+	fmt.Printf("Found version: %s\n", latest.Version)
+
 	mainMenu := tea.Create("Server Configuration Tool")
 	menu.ScriptMenu(mainMenu)
 	menu.ServerMenu(mainMenu)
 
-	_, err := mainMenu.Run()
+	_, err = mainMenu.Run()
 	if err != nil {
 		log.Fatalf("Error running menu: %v", err)
 	}
