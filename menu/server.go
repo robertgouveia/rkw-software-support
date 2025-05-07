@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	currentVersion = "1.0.0"
-	repoSlug       = "robertgouveia/rkw-software-support" // change this
+	currentVersion = "0.2.1"
+	repoSlug       = "robertgouveia/rkw-software-support"
 )
 
 func ServerMenu(mainMenu *tea.TeaModel) *tea.TeaModel {
